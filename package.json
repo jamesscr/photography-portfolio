@@ -4,11 +4,14 @@
   "description": "Photography Portfolio",
   "main": "server.js",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./dist/output.css",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "prod": "npm run build && npm start"
-  },
+      "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css",
+      "build:html": "cp index.html dist/ && cp -R dist/*.html dist/",
+      "build:assets": "cp -R assets dist/",
+      "build": "npm run build:css && npm run build:html && npm run build:assets",
+      "start": "node server.js",
+      "dev": "nodemon server.js",
+      "prod": "npm run build && npm start"
+    },
   "keywords": [],
   "author": "James Allan",
   "license": "MIT",
