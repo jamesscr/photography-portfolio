@@ -10,8 +10,8 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Serve static files from the 'dist' directory
 app.use(express.static(path.join(__dirname, "dist")));
@@ -28,9 +28,19 @@ let transporter = nodemailer.createTransport({
   },
 });
 
+app.post("/test-post", (req, res) => {
+  console.log("Test POST received:", req.body);
+  res.json({ received: req.body });
+});
+
 // Routes
-app.post("/send-email", (req, res) => {
+app.post("/send-mail", (req, res) => {
   const { email, subject, message } = req.body;
+
+  // Check if required fields are present
+  if (!email || !subject || !message) {
+    return res.status(400).send("Missing required fields");
+  }
 
   const mailOptions = {
     from: `"Contact Form" <${process.env.EMAIL}>`,
@@ -54,8 +64,8 @@ ${message}
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
-      res.status(500).send("Error sending email");
+      console.error("Error sending email:", error);
+      res.status(500).send(`Error sending email: ${error.message}`);
     } else {
       console.log("Email sent: " + info.response);
       res.status(200).send("Email sent successfully");
