@@ -4,10 +4,12 @@
   "description": "Photography Portfolio",
   "main": "server.js",
   "scripts": {
-      "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css",
-      "build:html": "cp index.html dist/ && cp -R dist/*.html dist/",
-      "build:assets": "cp -R assets dist/",
-      "build": "npm run build:css && npm run build:html && npm run build:assets",
+      "clean": "rm -rf build",
+      "prebuild": "npm run clean",
+      "build:css": "tailwindcss -i ./src/input.css -o ./build/output.css",
+      "build:html": "cp index.html about_me.html contact.html build/",
+      "build:assets": "cp -R dist/assets build/",
+      "build": "npm run prebuild && npm run build:css && npm run build:html && npm run build:assets",
       "start": "node server.js",
       "dev": "nodemon server.js",
       "prod": "npm run build && npm start"
