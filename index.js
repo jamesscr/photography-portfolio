@@ -35,11 +35,12 @@ app.post("/test-post", (req, res) => {
 
 // Routes
 app.post("/send-mail", (req, res) => {
+  console.log("Received data:", req.body); // Add this line
   const { email, subject, message } = req.body;
 
   // Check if required fields are present
   if (!email || !subject || !message) {
-    return res.status(400).send("Missing required fields");
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   const mailOptions = {
@@ -47,28 +48,30 @@ app.post("/send-mail", (req, res) => {
     to: "allanjeanjacques@gmail.com",
     subject: `New Contact Form Message: ${subject}`,
     text: `
-From: ${email}
-Subject: ${subject}
+        From: ${email}
+        Subject: ${subject}
 
-Message:
-${message}
-    `,
+        Message:
+        ${message}
+          `,
     html: `
-    <h2>New Contact Form Message</h2>
-    <p><strong>From:</strong> ${email}</p>
-    <p><strong>Subject:</strong> ${subject}</p>
-    <h3>Message:</h3>
-    <p>${message.replace(/\n/g, "<br>")}</p>
-    `,
+        <h2>New Contact Form Message</h2>
+        <p><strong>From:</strong> ${email}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <h3>Message:</h3>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+        `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error("Error sending email:", error);
-      res.status(500).send(`Error sending email: ${error.message}`);
+      res
+        .status(500)
+        .json({ message: `Error sending email: ${error.message}` });
     } else {
       console.log("Email sent: " + info.response);
-      res.status(200).send("Email sent successfully");
+      res.status(200).json({ message: "Email sent successfully" });
     }
   });
 });
